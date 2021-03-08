@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
-import 'package:sms_verification/logger/logger.dart';
+import 'package:sms_verification/helper/logger/logger.dart';
 import 'package:sms_verification/service/sms_verification/sms_verification/sms_verification_response.dart';
 import 'package:sms_verification/view/page/sms_verification/user_phone_number.dart';
 import 'package:sms_verification/view/widget/appbar/generic_appbar.dart';
@@ -117,7 +117,33 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                   margin: EdgeInsets.only(left: 32, right: 32),
                   child: KeyboardActions(
                       disableScroll: true,
-                      // config: keyboardConfig(context, [pinFocusNode]),
+                      config: KeyboardActionsConfig(
+                        keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
+                        keyboardBarColor: Colors.grey[200],
+                        nextFocus: true,
+                        actions: [pinFocusNode]
+                            .map(
+                              (e) => KeyboardActionsItem(
+                            focusNode: e,
+                            toolbarButtons: [
+                              //button 2
+                                  (node) {
+                                return GestureDetector(
+                                  onTap: () => node.unfocus(),
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    padding: EdgeInsets.symmetric(horizontal: 16),
+                                    child: Text(
+                                      "DONE",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                );
+                              }
+                            ],
+                          ),
+                        ).toList(),
+                      ),
                       child: PinInputTextField(
                         pinLength: smsResponse?.codeLength ?? 4,
                         focusNode: pinFocusNode,

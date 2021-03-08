@@ -9,6 +9,7 @@ class TraeteloButton extends StatelessWidget {
   final bool compressed;
   final Widget action;
   final bool bold;
+  Color color;
 
   TraeteloButton(
       {this.onTap,
@@ -33,6 +34,15 @@ class TraeteloButton extends StatelessWidget {
         this.action,
         this.bold = false})
       : buttonType = TraeteloButtonType.grey;
+
+  TraeteloButton.color(
+      {this.onTap,
+        this.color,
+        this.text,
+        this.compressed = false,
+        this.action,
+        this.bold = false})
+      : buttonType = TraeteloButtonType.color;
 
   bool get hasAction => action != null;
 
@@ -93,19 +103,13 @@ class TraeteloButton extends StatelessWidget {
         color: theme.greyButton,
       );
     }
-    if (buttonType == TraeteloButtonType.red) {
+    if (buttonType == TraeteloButtonType.color) {
       return BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: theme.redButton,
+        color: this.color,
       );
     }
-    if (buttonType == TraeteloButtonType.greyGradient) {
-      return BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        gradient: theme.greyGradient,
-        color: theme.greyButton,
-      );
-    }
+
   }
 
   Color getTextColor(BuildContext context) {
@@ -131,4 +135,4 @@ class TraeteloButton extends StatelessWidget {
   }
 }
 
-enum TraeteloButtonType { gradient, grey, greyGradient, red }
+enum TraeteloButtonType { gradient, grey, greyGradient, red, color}
