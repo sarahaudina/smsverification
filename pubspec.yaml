@@ -81,3 +81,12 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+dependency_overrides:
+  date_range_picker:
+    git:
+      url: https://github.com/LempereurBenjamin/date_range_picker
+  country_pickers:
+    git:
+      url: git://github.com/justkawal/country_pickers.git
+      ref: master
