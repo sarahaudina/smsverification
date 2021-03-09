@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_verification/provider/_providers.dart';
-import 'package:sms_verification/view/page/account/account_page.dart';
+import 'package:sms_verification/movas/view/page/account/account_page.dart';
 
 void main() {
   Provider.debugCheckInvalidValueType = <T>(T value) {

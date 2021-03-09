@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="android.com.view.page.sms_verification">
+    package="android.com.sms_verification">
    <application
         android:label="sms_verification"
         android:icon="@mipmap/ic_launcher">
