@@ -39,65 +39,37 @@ class _AccountPageState extends State<AccountPage> {
             Container(
               height: 16,
             ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: spacing * .3,
-                ),
-                CustomFormBuilderPhoneField(
-                  key: _formBuilderPhoneFieldKey,
-                  validateOnChange: true,
-                  focusNode: focusNodes[3],
-                  attribute: "principal",
-                  textInputAction: TextInputAction.done,
-                  keyboardType: TextInputType.phone,
-                  onChanged: (s){
-                    print('isvalid ${_formBuilderPhoneFieldKey.currentState.phoneNumberValid}');
-                  },
-                  onEditingComplete: () {
-                    return focusNodes[3].unfocus();
-                  },
-                  defaultSelectedCountryIsoCode: "VE",
-                ),
-              ],
+            CustomFormBuilderPhoneField(
+              key: _formBuilderPhoneFieldKey,
+              validateOnChange: true,
+              focusNode: focusNodes[3],
+              attribute: "principal",
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.phone,
+              onEditingComplete: () =>focusNodes[3].unfocus(),
+              defaultSelectedCountryIsoCode: "VE",
             ),
             SizedBox(
               height: spacing,
             ),
             _formBuilderPhoneFieldKey.currentState.fullNumber==verifiedNumber && verified ?
-                Text("Verified!")
-                : TextButton(onPressed: () async {
+                Text("Verified!") :
+            TextButton(onPressed: () async {
               if (_formBuilderPhoneFieldKey.currentState.phoneNumberValid){
                 final number = _formBuilderPhoneFieldKey.currentState.fullNumber;
-                SmsVerificationService service = StaticProvider.of(context);
-                if(service!=null){
-                  SmsVerificationAction.of(context).verifyNumber(phoneNumber: number);
-                } else {
-                  print('service null');
-                  return;
-                }
+                await SmsVerificationAction.of(context).verifyNumber(phoneNumber: number);
                 Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            SmsVerificationPage(
-                                phoneNumber:
-                                _formBuilderPhoneFieldKey
-                                    .currentState
-                                    .userPhoneNumber,
-                                onComplete: (phoneNumber, _) async {
-                                  _formBuilderPhoneFieldKey.currentState
-                                      .updateNumber(await UserPhoneNumber.fromString(phoneNumber));
-
-                                  setState(() {
-                                    verified = true;
-                                    verifiedNumber = phoneNumber;
-                                    print("verified number $verifiedNumber");
-                                  });
-
-                                  Navigator.of(context).pop();
-                                })));
-              }
+                    MaterialPageRoute(builder: (BuildContext context) =>
+                      SmsVerificationPage(
+                          phoneNumber: _formBuilderPhoneFieldKey.currentState.userPhoneNumber,
+                          onComplete: (phoneNumber, _) async {
+                            _formBuilderPhoneFieldKey.currentState.updateNumber(await UserPhoneNumber.fromString(phoneNumber));
+                            setState(() {
+                              verified = true;
+                              verifiedNumber = phoneNumber;
+                            });
+                            Navigator.of(context).pop();
+                          })));}
             }, child: Container(
               child: Text("Verify"),
             )),

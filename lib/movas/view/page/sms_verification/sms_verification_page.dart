@@ -9,14 +9,9 @@ class SmsVerificationPage extends StatefulWidget {
   final UserPhoneNumber phoneNumber;
   final Function(String, bool) onComplete;
 
-  final int countDownSecond;
-  final bool firstTime;
-
   const SmsVerificationPage(
       {Key key,
       this.phoneNumber,
-      this.firstTime = false,
-      this.countDownSecond = 60,
       this.onComplete})
       : super(key: key);
 
