@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
-import 'package:sms_verification/helper/logger/logger.dart';
-import 'package:sms_verification/movas/observable/smsverification/sms_verification_response.dart';
+import 'package:sms_verification/movas/observable/sms_verification_response.dart';
 import 'package:sms_verification/movas/view/page/sms_verification/user_phone_number.dart';
-import 'package:sms_verification/movas/view/widget/appbar/generic_appbar.dart';
-import 'package:sms_verification/movas/view/widget/button/traetelo_button.dart';
-import 'package:sms_verification/movas/view/widget/button/verification_button.dart';
-import 'package:sms_verification/movas/view/widget/dialog/phone_confirmation_dialog.dart';
-import 'package:sms_verification/movas/view/widget/input/telephone_number_widget.dart';
-import 'package:sms_verification/movas/view/widget/input/traetelo_pin_decoration.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 
 class SmsVerificationPage extends StatefulWidget {
@@ -35,7 +28,6 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
   TextEditingController _textInputController = TextEditingController();
   final pinFocusNode = FocusNode();
   UserPhoneNumber phoneNumber;
-  final GlobalKey<VerificationResendButtonState> _verificationResendButtonKey = GlobalKey();
   bool pinIncorrect = false;
 
   @override
@@ -47,9 +39,9 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: TraeteloAppBar.largeText2(title: 'Verificar número\nde móvil'),
+        appBar: AppBar(title: Text("Phone Verification")),
         body: Consumer<SmsVerificationResponse>(builder: (_, smsResponse, __) {
-          logger.info("verify number verif code : ${smsResponse?.verificationCode}");
+          print("verify number verif code : ${smsResponse?.verificationCode}");
           return SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -57,58 +49,13 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                   height: 16,
                 ),
                 Padding(
-                    padding: const EdgeInsets.only(left: 32.0, bottom: 8, right: 32),
-                    child: Text("Ingrese el código de verificación\nque le enviamos a su número de\nteléfono móvil ",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 17))),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16),
-                  child: Divider(),
-                ),
-                Padding(padding: const EdgeInsets.only(left: 32, right: 32, top: 8, bottom: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      TelephoneNumberWidget(phoneNumber: phoneNumber),
-                      SizedBox(
-                        width: 16,
-                        height: 12,
-                      ),
-                      Container(
-                          height: 45,
-                          child: TraeteloButton.grey(
-                              text: "Cambie el número",
-                              compressed: true,
-                              onTap: (() {
-                                return showDialog(
-                                        context: context,
-                                        builder: (context) =>
-                                            PhoneConfirmationDialog(
-                                                phoneNumber: phoneNumber))
-                                    .then((value) {
-                                  if (value is UserPhoneNumber)
-                                    setState(() {
-                                      phoneNumber = value;
-                                      _textInputController.clear();
-                                      _verificationResendButtonKey.currentState
-                                          .resendCode(value.fullPhoneNumber);
-                                    });
-                                });
-                              })))
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16),
-                  child: Divider(),
-                ),
+                    padding: const EdgeInsets.only(left: 16.0, bottom: 8, right: 16),
+                    child: Text("Enter ${smsResponse.codeLength} digit verification code sent to your phone")),
                 SizedBox(
                   height: 16,
                 ),
                 Container(
-                  margin: EdgeInsets.only(left: 32, right: 32),
+                  margin: EdgeInsets.only(left: 16, right: 16),
                   child: KeyboardActions(
                       disableScroll: true,
                       config: KeyboardActionsConfig(
@@ -141,20 +88,15 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                       child: PinInputTextField(
                         pinLength: smsResponse?.codeLength ?? 4,
                         focusNode: pinFocusNode,
-                        decoration: CustomBoxLooseDecoration(
-                            errorText: pinIncorrect
-                                ? "\nIntroduzca el número de pin correcto"
-                                : null,
-                            strokeColorBuilder: PinListenColorBuilder(
-                                Colors.green, Colors.grey[400]),
-                            bgColorBuilder: null,
-                            obscureStyle: ObscureStyle(isTextObscure: false)),
+                        decoration: BoxLooseDecoration(
+                          strokeColorBuilder: FixedColorBuilder(Colors.black)
+                        ),
                         controller: _textInputController,
                         enabled: true,
                         keyboardType: TextInputType.phone,
                         onSubmit: (String pin) {},
                         onChanged: (pin) {
-                          logger.info('onChanged execute. pin:$pin');
+                          print('onChanged execute. pin:$pin');
                           if (pinIncorrect) {
                             setState(() {
                               pinIncorrect = false;
@@ -167,12 +109,12 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                 SizedBox(
                   height: 45,
                 ),
-                TraeteloButton.gradient(
-                  text: 'Verificar',
-                  onTap: (() async {
+                TextButton(
+                  child: Text('Verify'),
+                  onPressed: (() async {
                     FocusScope.of(context).unfocus();
                     if (_textInputController.text == "${smsResponse.verificationCode}") {
-                      logger.info('submitted pin is correct');
+                      print('submitted pin is correct');
                       widget.onComplete(phoneNumber.fullPhoneNumber, true);
                     } else {
                       setState(() {
@@ -184,22 +126,6 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                 SizedBox(
                   height: 32,
                 ),
-                VerificationResendButton(
-                    countDownSecond: widget.countDownSecond,
-                    phoneNumber: phoneNumber.fullPhoneNumber,
-                    key: _verificationResendButtonKey),
-                widget.firstTime
-                    ? Padding(
-                        padding: const EdgeInsets.only(bottom: 54.0, top: 45),
-                        child: GestureDetector(
-                          onTap: () {
-                            widget.onComplete(
-                                phoneNumber.fullPhoneNumber, false);
-                          },
-                          child: Text("Verificar más tarde",
-                              style: TextStyle(fontSize: 19)),
-                        ))
-                    : Container()
               ],
             ),
           );

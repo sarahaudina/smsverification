@@ -153,12 +153,10 @@ class CustomFormBuilderPhoneFieldState
               BorderSide(color: Colors.grey.withOpacity(0.5), width: 2)),
       labelStyle: TextStyle(color: Colors.grey),
       hintStyle: TextStyle(color: Colors.grey),
-      labelText: "Teléfono celular",
-      hintText: "Ingrese Phone");
+      labelText: "Phone number",
+      hintText: "Enter phone number");
 
   String get fullNumber {
-    // When there is no phone number text, the field is empty -- the country
-    // prefix is only prepended when a phone number is specified.
     final phoneText = _effectiveController.text;
     return phoneText.isNotEmpty
         ? '+${_selectedDialogCountry.phoneCode}$phoneText'
@@ -251,7 +249,7 @@ class CustomFormBuilderPhoneFieldState
                   enabled: !_readOnly,
                   errorText: phoneNumberValid
                       ? null
-                      : "No es un número de teléfono válido",
+                      : "Invalid number",
                   prefix: _textFieldPrefix(field),
                   // prefixIcon: widget.decoration.prefixIcon == null ? _textFieldPrefix(field) : widget.decoration.prefixIcon,
                   // prefix: widget.decoration.prefixIcon != null ? _textFieldPrefix(field) : null,
@@ -260,7 +258,7 @@ class CustomFormBuilderPhoneFieldState
                   enabled: !_readOnly,
                   errorText: phoneNumberValid
                       ? null
-                      : "No es un número de teléfono válido",
+                      : "Invalid number",
                   prefix: _textFieldPrefix(field)),
           // initialValue: "${_initialValue ?? ''}",
           onChanged: (val) {
@@ -369,11 +367,11 @@ class CustomFormBuilderPhoneFieldState
             searchCursorColor:
                 widget.cursorColor ?? Theme.of(context).primaryColor,
             searchInputDecoration:
-                InputDecoration(hintText: widget.searchText ?? 'Buscar...'),
+                InputDecoration(hintText: widget.searchText ?? 'Search...'),
             isSearchable: widget.isSearchable ?? true,
             title: widget.dialogTitle ??
                 Text(
-                  'Seleccione su código de teléfono',
+                  'Select phone country code',
                   style: widget.dialogTextStyle ?? widget.style,
                 ),
             onValuePicked: (Country country) {
