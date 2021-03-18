@@ -18,7 +18,7 @@ List<SingleChildWidget> providers = [
       StaticProvider.of(context),
     ),
   ),
-  StoreProvider<SmsVerificationStore, SmsVerificationResponse>(
+  StoreProvider<SmsVerificationStore, SmsVerificationO>(
     storeBuilder: (context) => SmsVerificationStore(
         StaticProvider.of(context)
     ),

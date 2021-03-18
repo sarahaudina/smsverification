@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
-import 'package:sms_verification/movas/observable/sms_verification_response.dart';
+import 'package:sms_verification/movas/store/sms_verification_store.dart';
 import 'package:sms_verification/movas/view/page/sms_verification/user_phone_number.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 
@@ -35,8 +35,8 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("Phone Verification")),
-        body: Consumer<SmsVerificationResponse>(builder: (_, smsResponse, __) {
-          print("verify number verif code : ${smsResponse?.verificationCode}");
+        body: Consumer<SmsVerificationO>(builder: (_, smsVerificationO, __) {
+          print("verify number verif code : ${smsVerificationO?.response?.verificationCode}");
           return SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -45,7 +45,7 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                 ),
                 Padding(
                     padding: const EdgeInsets.only(left: 16.0, bottom: 8, right: 16),
-                    child: Text("Enter ${smsResponse.codeLength} digit verification code sent to your phone")),
+                    child: Text("Enter ${smsVerificationO?.response?.codeLength} digit verification code sent to your phone")),
                 SizedBox(
                   height: 16,
                 ),
@@ -81,7 +81,7 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                         ).toList(),
                       ),
                       child: PinInputTextField(
-                        pinLength: smsResponse?.codeLength ?? 4,
+                        pinLength: smsVerificationO?.response?.codeLength ?? 4,
                         focusNode: pinFocusNode,
                         decoration: BoxLooseDecoration(
                           strokeColorBuilder: FixedColorBuilder(Colors.black)
@@ -108,7 +108,7 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                   child: Text('Verify'),
                   onPressed: (() async {
                     FocusScope.of(context).unfocus();
-                    if (_textInputController.text == "${smsResponse.verificationCode}") {
+                    if (_textInputController.text == "${smsVerificationO?.response?.verificationCode}") {
                       print('submitted pin is correct');
                       widget.onComplete(phoneNumber.fullPhoneNumber, true);
                     } else {

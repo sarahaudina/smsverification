@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:movas/movas.dart';
 import 'package:sms_verification/movas/action/sms_verification_action.dart';
-import 'package:sms_verification/movas/service/sms_verification/sms_verification_service.dart';
 import 'package:sms_verification/movas/view/page/sms_verification/sms_verification_page.dart';
 import 'package:sms_verification/movas/view/page/sms_verification/user_phone_number.dart';
 import 'package:sms_verification/movas/view/widget/input/form_builder_phone_field.dart';
@@ -52,7 +50,7 @@ class _AccountPageState extends State<AccountPage> {
             SizedBox(
               height: spacing,
             ),
-            _formBuilderPhoneFieldKey.currentState.fullNumber==verifiedNumber && verified ?
+            _formBuilderPhoneFieldKey.currentState?.fullNumber==verifiedNumber && verified ?
                 Text("Verified!") :
             TextButton(onPressed: () async {
               if (_formBuilderPhoneFieldKey.currentState.phoneNumberValid){
